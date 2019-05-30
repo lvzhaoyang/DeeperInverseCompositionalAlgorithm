@@ -132,6 +132,7 @@ class LeastSquareTracking(nn.Module):
         :param the target image
         :param the inverse depth of the reference image
         :param the inverse depth of the target image
+        :param the pin-hole camera instrinsic (in vector) [fx, fy, cx, cy] 
         :param the initial pose [Rotation, translation]
         --------
         :return 

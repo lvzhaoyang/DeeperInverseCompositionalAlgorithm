@@ -16,10 +16,6 @@ from torchvision import transforms
 def color_normalize(color):
     rgb_mean = torch.Tensor([0.4914, 0.4822, 0.4465]).type_as(color)
     rgb_std = torch.Tensor([0.2023, 0.1994, 0.2010]).type_as(color)
-    # normalize = transforms.Normalize(mean=rgb_mean, std=rgb_std)
-    # B = color.shape[0]
-    # for idx in range(B):
-    #     color[idx] = normalize(color[idx])
     return (color - rgb_mean.view(1,3,1,1)) / rgb_std.view(1,3,1,1)
 
 def convLayer(batchNorm, in_planes, out_planes, kernel_size=3, stride=1, dilation=1, bias=False):
@@ -29,13 +25,13 @@ def convLayer(batchNorm, in_planes, out_planes, kernel_size=3, stride=1, dilatio
         return nn.Sequential(
             nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=(kernel_size-1)//2 + dilation-1, dilation=dilation, bias=bias),
             nn.BatchNorm2d(out_planes),
-            #nn.LeakyReLU(0.1,inplace=True)
+            #nn.LeakyReLU(0.1,inplace=True) # deprecated 
             nn.ELU(inplace=True)
         )
     else:
         return nn.Sequential(
             nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=stride, padding=(kernel_size-1)//2 + dilation-1, dilation=dilation, bias=True),
-            #nn.LeakyReLU(0.1,inplace=True)
+            #nn.LeakyReLU(0.1,inplace=True) # deprecated
             nn.ELU(inplace=True)
         )
 

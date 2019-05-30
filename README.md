@@ -46,30 +46,58 @@ conda env create -f setup/environment.yml
 
 ### Quick Inference Example
 
-### 
+### Prepare the datasets
 
-#### Prepare the datasets
-
-* TUM RGBD Dataset: download the dataset from [TUM RGBD][7] to '$TUM_RGBD_DIR'. Create a symbolic link to the data directory as 
+**TUM RGBD Dataset**: download the dataset from [TUM RGBD][7] to '$TUM_RGBD_DIR'. Create a symbolic link to the data directory as 
 
 ```
 ln -s $TUM_RGBD_DIR code/data/data_tum
 ```
 
-Train your algorithm 
+### Run training
 
-### Run evaluate with the pretrained models 
+**Train example with TUM RGBD dataset:** 
 
-Run the learned model 
+``` bash! 
+python train.py --dataset TUM_RGBD 
+
+# or run with the specific setting
+python train.py --dataset TUM_RGBD \
+--encoder_name ConvRGBD2 \
+--mestimator MultiScale2w \
+--solver Direct-ResVol \
+--keyframes 1,2,4,8 
+```
+
+To check the full training setting, run the help config as 
+``` bash!
+python train.py --help
+``` 
+
+**Train example with other datasets:** 
+
+``` bash!
+python train.py --dataset MovingObjs3D 
+```
+
+### Run evaluation with the pretrained models 
+
+**Run the pretrained model:** If you have set up the dataset properly with the datasets, you can run the learned model with the checkpoint we provided in the trained model directory 
 
 ``` bash!
 python evaluate.py --dataset TUM_RGBD \
 --trajectory fr1/rgbd_dataset_freiburg1_360 \
 --encoder_name ConvRGBD2 \
 --mestimator MultiScale2w \
---solver Direct-Nodamping \
+--solver Direct-ResVol \
 --keyframes 1 # optionally 1,2,4,8 \
 --checkpoint trained_models/TUM_RGBD_ABC_final.pth.tar
+```
+
+You can substitute the trajectory, the keyframe and the checkpoint file. The training and evaluation share the same config setting. To check the full setting, run the help config as
+
+``` bash!
+python evaluate.py --help
 ```
 
 **Run a baseline:** We provide the vanilla Lucas-Kanade method minizing the photometric error without any learning module. Note that it is **not** the [RGBD VO baseline][8] we report in the paper. It is not the optimal Lucas-Kanade baseline since we use the same stopping criterion, Gauss-Newton solver within the same framework as our learned model, which does not contain extra bells and whistles.
@@ -80,7 +108,6 @@ python evaluate.py --dataset TUM_RGBD \
 --encoder_name RGB --mestimator None --solve Direct-Nodamping \
 --keyframes 1 # optionally 1,2,4,8, etc.
 ```
-
 
 [1]: https://arxiv.org/pdf/1812.06861.pdf
 [2]: https://youtu.be/doTjXDFtyK0

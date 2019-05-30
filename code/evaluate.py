@@ -1,6 +1,7 @@
 """ Evaluation scripts
 
 @author: Zhaoyang Lv
+@date: March 2019
 """
 
 import os, sys, argparse, pickle
@@ -56,7 +57,7 @@ def create_eval_loaders(options, eval_type, keyframes,
     
     return eval_loaders
 
-def evaluateTrustRegion(dataloader, net, objectives, eval_name='',
+def evaluate_trust_region(dataloader, net, objectives, eval_name='',
         known_mask = False, timers = None):
     """ evaluate the trust-region method given the two-frame pose estimation
     :param the pytorch dataloader
@@ -204,7 +205,7 @@ def test_TrustRegion(options):
         traj_name, kf = k.split('_keyframe_')
 
         output_name = '{:}_{:}'.format(output_prefix, k)
-        info = evaluateTrustRegion(loader, net,
+        info = evaluate_trust_region(loader, net,
             eval_objectives,
             eval_name = 'tmp/'+output_name,
             known_mask=obj_has_mask)

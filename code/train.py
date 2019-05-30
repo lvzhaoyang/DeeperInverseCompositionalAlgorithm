@@ -18,7 +18,22 @@ import torch.utils.data as data
 from timers import Timers
 from tqdm import tqdm
 
-import evaluate_TrustRegion as eval_utils
+import evaluate as eval_utils
+
+def create_train_eval_loaders(options, eval_type, keyframes, 
+    total_batch_size = 8, 
+    trajectory  = ''):
+    """ create the evaluation loader at different keyframes set-up
+    """
+    eval_loaders = {}
+
+    for kf in keyframes:
+        np_loader = load_data(options.dataset, [kf], eval_type, trajectory)
+        eval_loaders['{:}_keyframe_{:}'.format(trajectory, kf)] = data.DataLoader(np_loader, 
+            batch_size = int(total_batch_size),
+            shuffle = False, num_workers = options.cpu_workers)
+    
+    return eval_loaders
 
 def train_one_epoch(options, dataloader, net, optim, epoch, logger, objectives,
     known_mask=False, timers=None):
@@ -67,6 +82,7 @@ def train_one_epoch(options, dataloader, net, optim, epoch, logger, objectives,
         R_gt, t_gt = Rt[:,:3,:3], Rt[:,:3,3]
  
         assert(flow_loss) # the only loss used for training
+
         epes3d = flow_loss(Rs, ts, R_gt, t_gt, depth0, K, invalid_mask).mean() * 1e2
         display_dict['train_epes3d'] = epes3d.item()
 
@@ -118,9 +134,7 @@ def train(options):
     else:
         obj_has_mask = True
 
-    # eval_loaders, K, size = eval_utils.create_egocentric_loaders(options)
-    eval_loaders = eval_utils.create_eval_loaders(options,
-        'validation', keyframes, total_batch_size)
+    eval_loaders = create_train_eval_loaders(options, 'validation', keyframes, total_batch_size)
 
     logfile_name = '_'.join([
         options.prefix, # the current test version
@@ -128,17 +142,16 @@ def train(options):
         options.encoder_name,
         options.mestimator,
         options.solver,
-        options.pyramid,
         'lr', str(options.lr),
         'batch', str(total_batch_size),
         'kf', options.keyframes])
 
     print("Initialize and train the Deep Trust Region Network")
-    net = LStracking.LeastSquareTracking(options.encoder_name,
+    net = LStracking.LeastSquareTracking(
+        encoder_name    = options.encoder_name,
         max_iter_per_pyr= options.max_iter_per_pyr,
         mEst_type       = options.mestimator,
         solver_type     = options.solver,
-        pyramid_type    = options.pyramid,
         tr_samples      = options.tr_samples,
         no_weight_sharing = options.no_weight_sharing,
         timers          = timers)
@@ -188,16 +201,17 @@ def train(options):
         if options.no_val is False:
             for k, loader in eval_loaders.items():
 
-                eval_info = eval_utils.evaluateTrustRegion(
-                    loader, net, eval_objectives, 
-                    known_mask=obj_has_mask, 
-                    timers = timers,
-                    verbose = False, 
-                    eval_all=False)
+                eval_name = '{:}_{:}'.format(options.dataset, k)
 
-                display_dict = {"{:}_{:}_epe3d".format(options.dataset, k): eval_info['epes'].mean(), 
-                    "{:}_{:}_rpe_angular".format(options.dataset, k): eval_info['angular_error'].mean(), 
-                    "{:}_{:}_rpe_translation".format(options.dataset, k): eval_info['translation_error'].mean()}
+                eval_info = eval_utils.evaluate_trust_region(
+                    loader, net, eval_objectives, 
+                    known_mask  = obj_has_mask, 
+                    eval_name   = eval_name,
+                    timers      = timers)
+
+                display_dict = {"{:}_epe3d".format(eval_name): eval_info['epes'].mean(), 
+                    "{:}_rpe_angular".format(eval_name): eval_info['angular_error'].mean(), 
+                    "{:}_rpe_translation".format(eval_name): eval_info['translation_error'].mean()}
 
                 logger.write_to_tensorboard(display_dict, epoch)
 

@@ -1,5 +1,8 @@
 """
 Data loader for TUM RGBD benchmark
+
+@author: Zhaoyang Lv
+@date: March 2019
 """
 
 from __future__ import absolute_import
@@ -162,7 +165,8 @@ class TUM(data.Dataset):
         self.fx_s = 0.25
         self.fy_s = 0.25
 
-        print('There are a total of {:} valid frames'.format(self.ids))
+        print('TUM dataloader for {:} using keyframe {:}: \
+            {:} valid frames'.format(category, keyframes, self.ids))
 
     def __load_train_val(self, root, category):
 
@@ -303,7 +307,7 @@ class TUM(data.Dataset):
         """
         depth = imread(path).astype(np.float32) / 5e3
         depth = resize(depth, None, fx=self.fx_s, fy=self.fy_s, interpolation=INTER_NEAREST)
-        depth = np.clip(depth, a_min=0.5, a_max=5.0) # the accuracy range of kinect depth
+        depth = np.clip(depth, a_min=0.5, a_max=5.0) # the accurate range of kinect depth
         return depth[np.newaxis, :]        
 
 """
@@ -364,6 +368,8 @@ def pickle2txts(pickle_file, txt_file):
 
 """
 The following utility files are provided by TUM RGBD dataset benchmark
+
+Refer: https://vision.in.tum.de/data/datasets/rgbd-dataset/tools
 """
 
 def read_file_list(filename):

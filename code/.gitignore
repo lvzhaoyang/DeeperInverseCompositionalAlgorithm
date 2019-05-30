@@ -2,3 +2,4 @@ trained_models/*
 test/*
 test_results/*
 */**/*.pyc
+logs/*
