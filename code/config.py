@@ -45,7 +45,7 @@ def add_basics_config(parser):
     parser.add_argument('--cpu_workers', type=int, default=12,
         help="Number of cpu threads for data loader.\n")
     parser.add_argument('--dataset', type=str,
-        choices=('BundleFusion', 'Refresh', 'FlyObjs', 'TUM_RGBD'),
+        choices=('TUM_RGBD', 'MovingObjects3D'),
         help='Choose a dataset to train/val/evaluate.\n')
     parser.add_argument('--time', dest='time', action='store_true',
         help='Count the execution time of each step.\n' )

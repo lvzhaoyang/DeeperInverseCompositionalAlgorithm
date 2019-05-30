@@ -48,10 +48,16 @@ conda env create -f setup/environment.yml
 
 ### Prepare the datasets
 
-**TUM RGBD Dataset**: download the dataset from [TUM RGBD][7] to '$TUM_RGBD_DIR'. Create a symbolic link to the data directory as 
+**TUM RGBD Dataset**: Download the dataset from [TUM RGBD][7] to '$YOUR_TUM_RGBD_DIR'. Create a symbolic link to the data directory as 
 
 ```
-ln -s $TUM_RGBD_DIR code/data/data_tum
+ln -s $YOUR_TUM_RGBD_DIR code/data/data_tum
+```
+
+**MovingObjects3D Dataset** Download the dataset from [MovingObjs3D][8] to '$YOUR_MOV_OBJS_3D_DIR'. Create a symbolic link to the data directory as 
+
+```
+ln -s $YOUR_MOV_OBJS_3D_DIR code/data/data_objs3D
 ```
 
 ### Run training
@@ -100,7 +106,7 @@ You can substitute the trajectory, the keyframe and the checkpoint file. The tra
 python evaluate.py --help
 ```
 
-**Run a baseline:** We provide the vanilla Lucas-Kanade method minizing the photometric error without any learning module. Note that it is **not** the [RGBD VO baseline][8] we report in the paper. It is not the optimal Lucas-Kanade baseline since we use the same stopping criterion, Gauss-Newton solver within the same framework as our learned model, which does not contain extra bells and whistles.
+**Run a baseline:** We provide the vanilla Lucas-Kanade method minizing the photometric error without any learning module. Note that it is **not** the [RGBD VO baseline][9] we report in the paper. It is not the optimal Lucas-Kanade baseline since we use the same stopping criterion, Gauss-Newton solver within the same framework as our learned model, which does not contain extra bells and whistles.
 
 ``` bash!
 python evaluate.py --dataset TUM_RGBD \
@@ -116,4 +122,5 @@ python evaluate.py --dataset TUM_RGBD \
 [5]: https://rehg.org/
 [6]: http://www.cvlibs.net/
 [7]: https://vision.in.tum.de/data/datasets/rgbd-dataset/download
-[8]: https://vision.cs.tum.edu/_media/spezial/bib/steinbruecker_sturm_cremers_iccv11.pdf 
+[8]: 
+[9]: https://vision.cs.tum.edu/_media/spezial/bib/steinbruecker_sturm_cremers_iccv11.pdf 

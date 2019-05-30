@@ -26,15 +26,18 @@ def load_data(dataset_name, keyframes = None, load_type = 'train',
     else:
         data_transform = image_transforms([])
 
-    if dataset_name == 'BundleFusion':
-        from data.BundleFusion import BundleFusion
-        np_loader = BundleFusion(load_type, keyframes, data_transform)
-    elif dataset_name == 'Refresh':
-        from data.REFRESH import REFRESH
-        np_loader = REFRESH(load_type, keyframes)
-    elif dataset_name == 'TUM_RGBD':
+    if dataset_name == 'TUM_RGBD':
         from data.TUM_RGBD import TUM
         np_loader = TUM('data', load_type, keyframes, data_transform, select_trajectory)
+    elif dataset_name == 'MovingObjects3D': 
+        from data.MovingObj3D import MovingObjects3D
+        np_loader = MovingObjects3D('data', load_type, keyframes, data_transform)
+    # elif dataset_name == 'BundleFusion':
+    #     from data.BundleFusion import BundleFusion
+    #     np_loader = BundleFusion(load_type, keyframes, data_transform)
+    # elif dataset_name == 'Refresh':
+    #     from data.REFRESH import REFRESH
+    #     np_loader = REFRESH(load_type, keyframes)
     else:
         raise NotImplementedError()
 
@@ -51,8 +54,8 @@ def image_transforms(options):
     if 'numpy2torch' in options:
         transform_list.append(ToTensor())
 
-    if 'color_normalize' in options:
-        transform_list.append(ColorNormalize())
+    # if 'color_normalize' in options: # we do it on the fly
+    #     transform_list.append(ColorNormalize())
 
     return transforms.Compose(transform_list)
 

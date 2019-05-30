@@ -161,7 +161,7 @@ class TUM(data.Dataset):
         else: # train and validation
             self.__load_train_val(root+'/data_tum', category)
 
-        # downscale the input image to half
+        # downscale the input image to a quarter
         self.fx_s = 0.25
         self.fy_s = 0.25
 
