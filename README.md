@@ -119,7 +119,7 @@ python evaluate.py --dataset TUM_RGBD \
 --encoder_name ConvRGBD2 \
 --mestimator MultiScale2w \
 --solver Direct-ResVol \
---keyframes 1 # optionally 1,2,4,8 \
+--keyframes 1 \
 --checkpoint trained_models/TUM_RGBD_ABC_final.pth.tar
 ```
 
@@ -129,7 +129,9 @@ You can substitute the trajectory, the keyframe and the checkpoint file. The tra
 python evaluate.py --help
 ```
 
-**Run a baseline:** We provide the vanilla Lucas-Kanade method minizing the photometric error without any learning module. Note that it is **not** the [RGBD VO baseline][9] we report in the paper. It is not the optimal Lucas-Kanade baseline since we use the same stopping criterion, Gauss-Newton solver within the same framework as our learned model, which does not contain extra bells and whistles.
+**Results:** The evaluation results will be generated automatically in both '.pkl' and '*.csv' in the folder 'test_results/'.
+
+**Run a baseline:** We provide a vanilla Lucas-Kanade method minizing the photometric error without any learnable module. Note that it is **not** the [RGBD VO baseline][9] we report in the paper. It may not the optimal Lucas-Kanade baseline you want to compared with since we use the same stopping criterion, Gauss-Newton solver within the same framework as our learned model, which does not contain extra bells and whistles.  
 
 ``` bash!
 python evaluate.py --dataset TUM_RGBD \
@@ -137,6 +139,10 @@ python evaluate.py --dataset TUM_RGBD \
 --encoder_name RGB --mestimator None --solve Direct-Nodamping \
 --keyframes 1 # optionally 1,2,4,8, etc.
 ```
+
+## License 
+
+To Be Added. 
 
 [1]: https://arxiv.org/pdf/1812.06861.pdf
 [2]: https://youtu.be/doTjXDFtyK0
