@@ -54,11 +54,17 @@ conda activate deepICN # the environment name will be (deepICN)
 
 ### Quick Inference Example
 
+A quick run using pre-trained model on a short TUM trajectory. 
+
 ```
-python quick_run.py
+python run_example.py
 ```
 
-### Prepare the datasets
+Be careful about the depth reader when you switch to a different dataset, which may use different scaling to the TUM dataset. This may affect the result. 
+
+To run the full training and evaluation, please follow the steps below.
+
+### Prepare the datasets 
 
 **TUM RGBD Dataset**: Download the dataset from [TUM RGBD][7] to '$YOUR_TUM_RGBD_DIR'. Create a symbolic link to the data directory as 
 
@@ -142,7 +148,28 @@ python evaluate.py --dataset TUM_RGBD \
 
 ## License 
 
-To Be Added. 
+MIT License
+
+Copyright (c) 2019 Zhaoyang Lv, Frank Dellaert, James M. Rehg, Andreas Geiger
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 
 [1]: https://arxiv.org/pdf/1812.06861.pdf
 [2]: https://youtu.be/doTjXDFtyK0
