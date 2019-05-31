@@ -54,13 +54,13 @@ conda activate deepICN # the environment name will be (deepICN)
 
 ### Quick Inference Example
 
-A quick run using pre-trained model on a short TUM trajectory. 
+Here is a quick run using pre-trained model on a short TUM trajectory. 
 
 ```
 python run_example.py
 ```
 
-Be careful about the depth reader when you switch to a different dataset, which may use different scaling to the TUM dataset. This may affect the result. 
+Be careful about the depth reader when you switch to a different dataset, which may use different scaling to the TUM dataset. And this pre-trained model is trained for egocentric-motion estimation using TUM dataset, not for the object-centric motion estimation. These factors may affect the result. 
 
 To run the full training and evaluation, please follow the steps below.
 
@@ -137,7 +137,7 @@ python evaluate.py --help
 
 **Results:** The evaluation results will be generated automatically in both '.pkl' and '*.csv' in the folder 'test_results/'.
 
-**Run a baseline:** We provide a vanilla Lucas-Kanade method minizing the photometric error without any learnable module. Note that it is **not** the [RGBD VO baseline][9] we report in the paper. It may not the optimal Lucas-Kanade baseline you want to compared with since we use the same stopping criterion, Gauss-Newton solver within the same framework as our learned model, which does not contain extra bells and whistles.  
+**Run a baseline:** This implementation can be simplified to a vanilla Lucas-Kanade method minizing the photometric error without any learnable module. Note that it is **not** the [RGBD VO baseline][9] we report in the paper. It may not be the optimal Lucas-Kanade baseline you want to compared with since we use the same stopping criterion, Gauss-Newton solver within the same framework as our learned model. There is no extra bells and whistles, but it may provide a baseline for you to explore the algorithm in various directions.  
 
 ``` bash!
 python evaluate.py --dataset TUM_RGBD \
