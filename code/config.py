@@ -1,4 +1,8 @@
-""" Add the configurations by modules
+""" 
+Add the configurations by modules
+
+@author: Zhaoyang Lv
+@date: March 2019
 """
 
 def add_tracking_config(parser):

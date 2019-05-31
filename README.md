@@ -21,6 +21,8 @@ CVPR 2019
 }
 ```
 
+Please cite the paper if you use the provided code in your research. 
+
 ### Project Members
 
 * [Zhaoyang Lv][3], Georgia Institute of Technology (Ph.D. student), Max Planck Institute (Alumni)
@@ -30,7 +32,7 @@ CVPR 2019
 
 ### Contact
 
-Please drop me an email if you have any questions regarding this project. Please also do not hesitate to contact me if you have any requests for your current projects before you have access to the code.
+Please drop me an email if you have any questions regarding this project. 
 
 Zhaoyang Lv (zhaoyang.lv@gatech.edu, lvzhaoyang1990@gmail.com)
 
@@ -44,7 +46,17 @@ You can reproduce the setup by using our anaconda environment configurations
 conda env create -f setup/environment.yml
 ```
 
+Everytime before you run, activate the environment
+
+``` bash!
+conda activate deepICN # the environment name will be (deepICN)
+```
+
 ### Quick Inference Example
+
+```
+python quick_run.py
+```
 
 ### Prepare the datasets
 
@@ -72,7 +84,7 @@ python train.py --dataset TUM_RGBD \
 --encoder_name ConvRGBD2 \
 --mestimator MultiScale2w \
 --solver Direct-ResVol \
---keyframes 1,2,4,8 
+--keyframes 1,2,4,8 # mixing keyframes subsampled from 1,2,4,8 for training.
 ```
 
 To check the full training setting, run the help config as 
@@ -88,7 +100,8 @@ tensorboard --log logs/TUM_RGBD --port 8000 # go to localhost:8000 to check the 
 **Train example with MovingObjects3D:** All the same as the last one only except changing the dataset name
 
 ``` bash!
-python train.py --dataset MovingObjs3D 
+python train.py --dataset MovingObjs3D \
+--keyframes 1,2,4 # mixing keyframes subsampled from 1,2,4 for training
 
 # check the training progress using tensorboard
 tensorboard --log logs/MovingObjs3D --port 8001
@@ -132,5 +145,5 @@ python evaluate.py --dataset TUM_RGBD \
 [5]: https://rehg.org/
 [6]: http://www.cvlibs.net/
 [7]: https://vision.in.tum.de/data/datasets/rgbd-dataset/download
-[8]: 
+[8]: https://drive.google.com/open?id=1EIlS4J2J0sdsq8Mw_03DXHlRQmfL8XQx
 [9]: https://vision.cs.tum.edu/_media/spezial/bib/steinbruecker_sturm_cremers_iccv11.pdf 

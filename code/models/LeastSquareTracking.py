@@ -1,5 +1,5 @@
 """
-The learned Inverse Compositional Tracking
+The learned Inverse Compositional Tracking.
 Support both ego-motion and object-motion tracking
 
 @author: Zhaoyang Lv

@@ -1,4 +1,6 @@
 """
+The algorithm backbone, primarily the three contributions proposed in our paper
+
 @author: Zhaoyang Lv
 @date: March, 2019
 """
@@ -13,14 +15,20 @@ from models.submodules import convLayer as conv
 from models.submodules import fcLayer, initialize_weights
 
 class TrustRegionBase(nn.Module):
-    """ The base of trust-region method for 6D pose estimation.
+    """ 
+    This is the the base function of the trust-region based inverse compositional algorithm. 
     """
-
     def __init__(self,
         max_iter    = 3,
         mEst_func   = None,
         solver_func = None,
         timers      = None):
+        """
+        :param max_iter, maximum number of iterations
+        :param mEst_func, the M-estimator function / network 
+        :param solver_func, the trust-region function / network
+        :param timers, if yes, counting time for each step
+        """
         super(TrustRegionBase, self).__init__()
 
         self.max_iterations = max_iter
@@ -32,10 +40,12 @@ class TrustRegionBase(nn.Module):
         """
         :param pose, the initial pose
             (extrinsic of the target frame w.r.t. the referenc frame)
-        :param x0, the template image features
-        :param x1, the target image features
-        :param invD0, the template image inverse depth
-        :param invD1, the target image inverse depth
+        :param x0, the template features
+        :param x1, the image features
+        :param invD0, the template inverse depth
+        :param invD1, the image inverse depth
+        :param K, the intrinsic parameters, [fx, fy, cx, cy]
+        :param wPrior (optional), provide an initial weight as input to the convolutional m-estimator
         """
         B, C, H, W = x0.shape
         px, py = geometry.generate_xy_grid(B,H,W,K)
@@ -50,7 +60,7 @@ class TrustRegionBase(nn.Module):
         if self.timers: self.timers.toc('compute warping residuals')
 
         if self.timers: self.timers.tic('robust estimator')
-        weights = self.mEstimator(residuals, x0, x1, J_F_p, wPrior)
+        weights = self.mEstimator(residuals, x0, x1, wPrior)
         wJ = weights.view(B,-1,1) * J_F_p
         if self.timers: self.timers.toc('robust estimator')
 
@@ -75,8 +85,15 @@ class TrustRegionBase(nn.Module):
     def precompute_Jacobian(self, invD, x, px, py, K):
         """ Pre-compute the image Jacobian on the reference frame
         refer to equation (13) in the paper
-        :param reference depth
-        :param reference image
+        
+        :param invD, template depth
+        :param x, template feature
+        :param px, normalized image coordinate in cols (x)
+        :param py, normalized image coordinate in rows (y)
+        :param K, the intrinsic parameters, [fx, fy, cx, cy]
+
+        ------------
+        :return precomputed image Jacobian on template
         """
         Jf_x, Jf_y = feature_gradient(x)
         Jx_p, Jy_p = compute_jacobian_warping(invD, K, px, py)
@@ -100,7 +117,9 @@ class ImagePyramids(nn.Module):
         return x_out
 
 class FeaturePyramid(nn.Module):
-    """ The encoder network to extract the feature representation
+    """ 
+    The proposed feature-encoder (A).
+    It also supports to extract features using one-view only.
     """
     def __init__(self, D):
         super(FeaturePyramid, self).__init__()
@@ -138,7 +157,9 @@ class FeaturePyramid(nn.Module):
         return x0, x1, x2, x3
 
 class DeepRobustEstimator(nn.Module):
-    """ The deep_robust_estimator network
+    """ The M-estimator 
+
+    When use estimator_type = 'MultiScale2w', it is the proposed convolutional M-estimator
     """
 
     def __init__(self, estimator_type):
@@ -163,13 +184,12 @@ class DeepRobustEstimator(nn.Module):
         else:
             self.net = None
 
-    def forward(self, residual, x0, x1, J=None, ws=None):
+    def forward(self, residual, x0, x1, ws=None):
         """
-        :param the residual map
-        :param the feature map of the reference image
-        :param the feature map of the target image
-        :param the Jacobian image on the first image
-        :param the weighted residual from the downscaled image
+        :param residual, the residual map
+        :param x0, the feature map of the template
+        :param x1, the feature map of the image
+        :param ws, the initial weighted residual
         """
         if self.D == 1: # use residual only
             context = residual.abs()
@@ -226,6 +246,22 @@ class DirectSolverNet(nn.Module):
             raise NotImplementedError()
 
     def forward(self, JtJ, Jt, weights, R, pose0, invD0, invD1, x0, x1, K):
+        """
+        :param JtJ, the approximated Hessian JtJ
+        :param Jt, the trasposed Jacobian
+        :param weights, the weight matrix
+        :param R, the residual
+        :param pose0, the initial estimated pose
+        :param invD0, the template inverse depth map
+        :param invD1, the image inverse depth map
+        :param x0, the template feature map
+        :param x1, the image feature map
+        :param K, the intrinsic parameters
+
+        -----------
+        :return updated pose
+        """
+
         B = JtJ.shape[0]
 
         wR = (weights * R).view(B, -1, 1)
@@ -251,13 +287,22 @@ class DirectSolverNet(nn.Module):
 
     def __regularize_residual_volume(self, JtJ, Jt, JtR, weights, pose,
         invD0, invD1, x0, x1, K, sample_range):
-        """ Regularize the residual volume
-        :param the approximated Hessian JtJ
-        :param J^{t}
-        :param the reference frame inverse depth map
-        :param the reference frame feature map
-        :param the target frame feature map
-        :param the initial pose
+        """ regularize the approximate with residual volume
+
+        :param JtJ, the approximated Hessian JtJ
+        :param Jt, the trasposed Jacobian
+        :param JtR, the Right-hand size residual
+        :param weights, the weight matrix
+        :param pose, the initial estimated pose
+        :param invD0, the template inverse depth map
+        :param invD1, the image inverse depth map
+        :param K, the intrinsic parameters
+        :param x0, the template feature map
+        :param x1, the image feature map
+        :param sample_range, the numerb of samples
+
+        ---------------
+        :return the damped Hessian matrix
         """
         # the following current support only single scale
         JtR_volumes = []
@@ -429,6 +474,7 @@ def invH(H):
     # works (50x faster) than inversing the dense matrix in GPU
     if H.is_cuda:
         # invH = bpinv((H).cpu()).cuda()
+        # invH = torch.inverse(H)
         invH = torch.inverse(H.cpu()).cuda()
     else:
         invH = torch.inverse(H)

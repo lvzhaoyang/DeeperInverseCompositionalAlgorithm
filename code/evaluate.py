@@ -1,4 +1,5 @@
-""" Evaluation scripts
+""" 
+Evaluation scripts
 
 @author: Zhaoyang Lv
 @date: March 2019
@@ -68,7 +69,7 @@ def evaluate_trust_region(dataloader, net, objectives, eval_name='',
     """
 
     progress = tqdm(dataloader, ncols=100,
-        desc = 'evaluate pose regression {:}'.format(eval_name),
+        desc = 'evaluate deeper inverse compositional algorithm {:}'.format(eval_name),
         total= len(dataloader))
 
     net.eval()
@@ -90,6 +91,7 @@ def evaluate_trust_region(dataloader, net, objectives, eval_name='',
         outputs['translation_error'] = np.zeros(total_frames) 
 
     count_base = 0
+
     if timers: timers.tic('one iteration')
 
     count = 1
@@ -140,7 +142,8 @@ def evaluate_trust_region(dataloader, net, objectives, eval_name='',
         if timers: timers.toc('one iteration')
         if timers: timers.tic('one iteration')
 
-        #if timers: timers.print()
+    # if timers: timers.print()
+
     return outputs
 
 def test_TrustRegion(options):

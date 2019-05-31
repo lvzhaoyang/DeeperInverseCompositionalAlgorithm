@@ -1,5 +1,6 @@
-
 """
+Submodules to build up CNN
+
 @author: Zhaoyang Lv
 @date: March, 2019
 """

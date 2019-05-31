@@ -1,6 +1,8 @@
-""" Logger, wrapped on Tensorboard 1.0.0
+""" Logger, wrapped on Tensorboard 1.0.0a6
+Tensorboard is not backward compatible since then. 
 
 @author: Zhaoyang Lv
+@date: March 2019
 """
 
 import sys, os, shutil

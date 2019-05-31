@@ -1,6 +1,7 @@
-""" The dataloaders for ego-motion training
+""" The dataloaders for training and evaluation
 
 @author: Zhaoyang Lv
+@date: March 2019
 """
 
 from __future__ import absolute_import

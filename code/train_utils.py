@@ -2,6 +2,7 @@
 The training utility functions
 
 @author: Zhaoyang Lv
+@date: March 2019
 """
 
 import os, sys

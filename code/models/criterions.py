@@ -1,4 +1,6 @@
 """
+Some training criterions
+
 @author: Zhaoyang Lv
 @date: March, 2019
 """

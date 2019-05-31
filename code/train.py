@@ -1,10 +1,13 @@
 """
 The training script for deep trust region method
+
+@author: Zhaoyang Lv 
+@date: March 2019
 """
 
 import os, sys, argparse, time
 
-import models.LeastSquareTracking as LStracking
+import models.LeastSquareTracking as ICtracking
 import models.criterions as criterions
 import models.geometry as geometry
 import train_utils
@@ -147,7 +150,7 @@ def train(options):
         'kf', options.keyframes])
 
     print("Initialize and train the Deep Trust Region Network")
-    net = LStracking.LeastSquareTracking(
+    net = ICtracking.LeastSquareTracking(
         encoder_name    = options.encoder_name,
         max_iter_per_pyr= options.max_iter_per_pyr,
         mEst_type       = options.mestimator,
