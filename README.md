@@ -80,11 +80,21 @@ To check the full training setting, run the help config as
 python train.py --help
 ``` 
 
-**Train example with other datasets:** 
+Use tensorboard to check the progress during training
+``` bash!
+tensorboard --log logs/TUM_RGBD --port 8000 # go to localhost:8000 to check the training&validation curve
+```
+
+**Train example with MovingObjects3D:** All the same as the last one only except changing the dataset name
 
 ``` bash!
 python train.py --dataset MovingObjs3D 
+
+# check the training progress using tensorboard
+tensorboard --log logs/MovingObjs3D --port 8001
 ```
+
+We will soon release the instructions for the other two datasets used in the paper, data in the BundleFusion and DynamicBundleFusion.
 
 ### Run evaluation with the pretrained models 
 

@@ -72,7 +72,7 @@ def train_one_epoch(options, dataloader, net, optim, epoch, logger, objectives,
         # Bypass lazy way to bypass invalid pixels. 
         invalid_mask = (depth0 == depth0.min()) + (depth0 == depth0.max())
         if obj_mask0 is not None:
-            invalid_mask = ~obj_mask0 * invalid_mask
+            invalid_mask = ~obj_mask0 + invalid_mask
 
         Rs, ts = net.forward(color0, color1, depth0, depth1, K)[:2]
 

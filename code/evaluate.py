@@ -127,7 +127,7 @@ def evaluate_trust_region(dataloader, net, objectives, eval_name='',
 
         if flow_loss:# evaluate the end-point-error loss 3D
             invalid_mask = (depth0 == depth0.min()) + (depth0 == depth0.max())
-            if obj_mask0 is not None: invalid_mask = ~obj_mask0 * invalid_mask
+            if obj_mask0 is not None: invalid_mask = ~obj_mask0 + invalid_mask
 
             epes3d = flow_loss(R, t, R_gt, t_gt, depth0, K, invalid_mask)            
             outputs['epes'][count_base:count_base+B] = epes3d.cpu().numpy()
