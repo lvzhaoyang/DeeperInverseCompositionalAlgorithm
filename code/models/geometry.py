@@ -257,7 +257,7 @@ def batch_warp_inverse_depth(p_x, p_y, p_invD, pose, K):
     x_y_1 = torch.cat((p_x, p_y, I), dim=1)
 
     warped = torch.bmm(R, x_y_1.view(B,3,H*W)) + \
-        t.view(B,3,1).expand(B,3,H*W) * p_invD.view(B, 1, H*W).expand(B,3,H*W)
+        torch.bmm(t.view(B,3,1), p_invD.view(B,1,H*W))
 
     x_, y_, s_ = torch.split(warped, 1, dim=1)
     fx, fy, cx, cy = torch.split(K, 1, dim=1)
